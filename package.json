@@ -13,7 +13,7 @@
 		"multi-root ready"
 	],
 	"engines": {
-		"vscode": "^1.46.1",
+		"vscode": "^1.33.0",
 		"node": "^14.4.0"
 	},
 	"icon": "images/logo.png",
@@ -135,13 +135,13 @@
 								"description": "Enable logging of the Debug Adapter Protocol.",
 								"default": true
 							},
-							"jsPath":{
-								"type":"string",
-								"description":"the js path",
-								"default":"${workspaceFolder}/src"
+							"jsPath": {
+								"type": "string",
+								"description": "the js path",
+								"default": "${workspaceFolder}/src"
 							},
-							"sourceMaps":{
-								"type":"boolean",
+							"sourceMaps": {
+								"type": "boolean",
 								"description": "Enable sourceMaps.",
 								"default": false
 							}
