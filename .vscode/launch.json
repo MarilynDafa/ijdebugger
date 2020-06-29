@@ -1,0 +1,65 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Extension",
+			"type": "extensionHost",
+			"request": "launch",
+			"runtimeExecutable": "${execPath}",
+			"args": [
+				"--extensionDevelopmentPath=${workspaceFolder}"
+			],
+			"outFiles": [
+				"${workspaceFolder}/out/**/*.js"
+			],
+			"preLaunchTask": "npm: watch"
+		},
+		{
+			"name": "Server",
+			"type": "node",
+			"request": "launch",
+			"cwd": "${workspaceFolder}",
+			"program": "${workspaceFolder}/src/debugAdapter.ts",
+			"args": [
+				"--server=4711"
+			],
+			"outFiles": [
+				"${workspaceFolder}/out/**/*.js"
+			]
+		},
+		{
+			"name": "Launch IJJS",
+			"type": "ijjs",
+			"request": "launch",
+			"program": "${workspaceFolder}/src/tests/data/test.js",
+			"runtimeExecutable": "/Volumes/Dev/ijjs/ijjs-debug"
+		},
+		{
+			"name": "Attach IJJS (connect)",
+			"type": "ijjs",
+			"request": "launch",
+			"program": "${workspaceFolder}/src/tests/data/test.js",
+			"runtimeExecutable": "/Volumes/Dev/ijjs/ijjs-debug",
+			"localRoot": "${workspaceFolder}/src/tests/data/",
+			"mode": "connect",
+			"attach": true,
+			"port": 5555
+		},
+		{
+			"name": "Attach IJJS",
+			"type": "ijjs",
+			"request": "launch",
+			"attach": true,
+			"port": 5555,
+			"program": "${workspaceFolder}/src/tests/data/test.js",
+			"localRoot": "${workspaceFolder}/src/tests/data/",
+			"runtimeExecutable": "/Volumes/Dev/ijjs/ijjs-debug"
+		}
+	],
+	"compounds": [
+		{
+			"name": "Extension + Server",
+			"configurations": [ "Extension", "Server" ]
+		}
+	]
+}
