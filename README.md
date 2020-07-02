@@ -1,3 +1,5 @@
+
+![IJJS Debug](images/logo.png)
 # IJJS Debug for VS Code
 
 This is a VS Code debug adapter for [ijjs](https://github.com/MarilynDafa/ijjs).
@@ -13,4 +15,3 @@ IJJS Debugger supports *stepping*, *continue*, *breakpoints*, *evaluation*, and
 * Select the debug environment "Launch IJJS".
 * Press the green 'play' button to start debugging.
 
-![IJJS Debug](images/logo.png)
