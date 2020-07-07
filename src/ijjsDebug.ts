@@ -81,13 +81,14 @@ export class IJJSDebugSession extends SourcemapSession {
 	private _stackFrames = new Map<number, number>();
 	private _variables = new Map<number, number>();
 	private _commonArgs: CommonArguments;
+	private cwd :string = "";
 	private _argsSubject = new Subject();
 	private _argsReady = (async () => {
 		await this._argsSubject.wait();
 	})();
 
 	public constructor() {
-		super("ijjs-debug.txt");
+		super("quickjs-debug.txt");
 
 		this.setDebuggerLinesStartAt1(true);
 		this.setDebuggerColumnsStartAt1(true);
@@ -250,7 +251,7 @@ export class IJJSDebugSession extends SourcemapSession {
 			this.sendErrorResponse(response, 17, e.message);
 			return;
 		}
-		var cwd = <string>args.cwd || path.dirname(args.program);
+		this.cwd = <string>args.cwd || path.dirname(args.program);
 
 		if (typeof args.console === 'string') {
 			switch (args.console) {
@@ -266,10 +267,10 @@ export class IJJSDebugSession extends SourcemapSession {
 		}
 
 		let ijjsArgs = (args.args || []).slice();
-		ijjsArgs.unshift(args.program);
+		ijjsArgs.unshift(args.program.substr(this.cwd.length+1));
 
 		if (this._supportsRunInTerminalRequest && (this._console === 'externalTerminal' || this._console === 'integratedTerminal')) {
-
+			let cwd = this.cwd;
 			const termArgs: DebugProtocol.RunInTerminalRequestArguments = {
 				kind: this._console === 'integratedTerminal' ? 'integrated' : 'external',
 				title: "IJJS Debug Console",
@@ -287,12 +288,11 @@ export class IJJSDebugSession extends SourcemapSession {
 				}
 			});
 		} else {
-			const options: CP.SpawnOptions = {
-				cwd,
-				env,
-			};
-
-			const nodeProcess = CP.spawn(args.runtimeExecutable, ijjsArgs, options);
+			let exepath = args.runtimeExecutable;
+			const nodeProcess = CP.spawn(exepath, ijjsArgs, {
+				cwd: this.cwd,
+				env: env
+			});
 			nodeProcess.on('error', (error) => {
 				// tslint:disable-next-line:no-bitwise
 				this.sendErrorResponse(response, 2017, `Cannot launch debug target (${error.message}).`);
@@ -329,7 +329,7 @@ export class IJJSDebugSession extends SourcemapSession {
 
 			if (!this._commonArgs.port)
 				throw new Error("Must specify a 'port' for 'connect'");
-			env['IJJS_DEBUG_LISTEN_ADDRESS'] = `${address}:${this._commonArgs.port}`;
+			env['QUICKJS_DEBUG_LISTEN_ADDRESS'] = `${address}:${this._commonArgs.port}`;
 		}
 		else {
 			this._server = new Server(this.onSocket.bind(this));
@@ -337,8 +337,9 @@ export class IJJSDebugSession extends SourcemapSession {
 			var port = (<AddressInfo>this._server.address()).port;
 			this.log(`IJJS Debug Port: ${port}`);
 
-			env['IJJSJS_DEBUG_ADDRESS'] = `localhost:${port}`;
+			env['QUICKJS_DEBUG_ADDRESS'] = `localhost:${port}`;
 		}
+		env['Path'] = process.env.PATH;
 	}
 
 	private async afterConnection() {
@@ -428,9 +429,7 @@ export class IJJSDebugSession extends SourcemapSession {
 	}
 
 	private getRelativeFile(file:string){
-		let jsPath=this._commonArgs.jsPath;
-
-		let ret = path.relative(jsPath, file) as string;
+		let ret = path.relative(this.cwd, file) as string;
 		ret=ret.replace(/\\/g,"/");
 		return ret;
 	}
@@ -531,7 +530,7 @@ export class IJJSDebugSession extends SourcemapSession {
 
 		const stackFrames: StackFrame[] = [];
 		for (let { id, name, filename, line, column } of body) {
-			filename=this._commonArgs.jsPath+filename;
+			filename=this.cwd+"/"+filename;
 			var mappedId = id + thread;
 			this._stackFrames.set(mappedId, thread);
 

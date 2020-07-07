@@ -1,5 +1,5 @@
 {
-	"name": "ijjs-debug",
+	"name": "ijdebugger",
 	"displayName": "IJJS Debugger",
 	"version": "1.0.0",
 	"publisher": "marilyndafa",
@@ -21,6 +21,13 @@
 		"Debuggers"
 	],
 	"private": true,
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/MarilynDafa/ijdebugger.git"
+	},
+	"bugs": {
+		"url": "https://github.com/MarilynDafa/ijdebugger/issues"
+	},
 	"scripts": {
 		"prepublish": "tsc -p ./src",
 		"compile": "tsc -p ./src",
@@ -62,7 +69,7 @@
 		"debuggers": [
 			{
 				"type": "ijjs",
-				"label": "IJJS Debug",
+				"label": "IJJS",
 				"program": "./out/debugAdapter.js",
 				"runtime": "node",
 				"configurationAttributes": {
@@ -103,7 +110,7 @@
 							},
 							"mode": {
 								"type": "string",
-								"description": "The debugger connection mode. Use 'listen' to have VS Code wait for IJJS to connect. Use 'connect' to have VSCode attach to a IJJS runtime that is listening for a debugger.",
+								"description": "The debugger connection mode. Use 'listen' to have VS Code wait for ijjs to connect. Use 'connect' to have VSCode attach to a ijjs runtime that is listening for a debugger.",
 								"enum": [
 									"connect",
 									"listen"
@@ -151,7 +158,7 @@
 						"properties": {
 							"mode": {
 								"type": "string",
-								"description": "The debugger connection mode. Use 'listen' to have VS Code wait for IJJS to connect. Use 'connect' to have VSCode attach to a IJJS runtime that is listening for a debugger.",
+								"description": "The debugger connection mode. Use 'listen' to have VS Code wait for ijjs to connect. Use 'connect' to have VSCode attach to a ijjs runtime that is listening for a debugger.",
 								"enum": [
 									"connect",
 									"listen"
@@ -190,31 +197,31 @@
 					{
 						"type": "ijjs",
 						"request": "launch",
-						"name": "Launch IJJS",
-						"runtimeExecutable": "/path/to/ijjs",
-						"program": "^\"${workspaceFolder}/main.js\""
+						"name": "ijjs.launch",
+						"runtimeExecutable": "ijjs-cli",
+						"program": "${workspaceFolder}/main.js"
 					}
 				],
 				"configurationSnippets": [
 					{
-						"label": "IJJS Debug: Launch",
-						"description": "A new configuration for launching and debugging a JavaScript file in IJJS.",
+						"label": "IJJS: Launch",
+						"description": "A new configuration for launching and debugging a JavaScript file in ijjs.",
 						"body": {
 							"type": "ijjs",
 							"request": "launch",
-							"name": "Launch IJJS",
-							"runtimeExecutable": "/path/to/ijjs",
-							"program": "^\"\\${workspaceFolder}/main.js\""
+							"name": "ijjs.launch",
+							"runtimeExecutable": "ijjs-cli",
+							"program": "${workspaceFolder}/main.js"
 						}
 					},
 					{
-						"label": "IJJS Debug: Attach",
-						"description": "A new configuration for launching and waiting fpr IJJS to attach.",
+						"label": "IJJS: Attach",
+						"description": "A new configuration for launching and waiting fpr ijjs to attach.",
 						"body": {
 							"type": "ijjs",
 							"request": "launch",
-							"name": "Attach IJJS",
-							"localRoot": "^\"\\${workspaceFolder}/\""
+							"name": "ijjs.attach",
+							"localRoot": "${workspaceFolder}/"
 						}
 					}
 				]
