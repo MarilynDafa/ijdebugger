@@ -1,7 +1,7 @@
 {
 	"name": "ijdebugger",
 	"displayName": "IJJS Debugger",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"publisher": "marilyndafa",
 	"description": "Debug the IJJS runtime.",
 	"author": {
@@ -82,7 +82,7 @@
 							"program": {
 								"type": "string",
 								"description": "Absolute path to a js file.",
-								"default": "${workspaceFolder}/main.js"
+								"default": "${workspaceFolder}/dist/main.js"
 							},
 							"console": {
 								"type": "string",
@@ -199,7 +199,10 @@
 						"request": "launch",
 						"name": "ijjs.launch",
 						"runtimeExecutable": "ijjs-cli",
-						"program": "${workspaceFolder}/main.js"
+						"sourceMaps":true,
+						"localRoot": "${workspaceFolder}/src/",
+						"remoteRoot": "${workspaceFolder}/dist/",
+						"program": "${workspaceFolder}/dist/main.js"
 					}
 				],
 				"configurationSnippets": [
@@ -211,7 +214,7 @@
 							"request": "launch",
 							"name": "ijjs.launch",
 							"runtimeExecutable": "ijjs-cli",
-							"program": "${workspaceFolder}/main.js"
+							"program": "${workspaceFolder}/dist/main.js"
 						}
 					},
 					{
