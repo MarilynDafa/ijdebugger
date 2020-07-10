@@ -11,8 +11,7 @@ IJJS Debugger supports *stepping*, *continue*, *breakpoints*, *evaluation*, and
 
 * Install IJJS.
 * Install the [**IJJS Debug** extension] in VS Code.
-* Create settings.json in .vscode folder and add "typescript.tsdk": "your ijjs setup folder"
+* Use command "ijjs-cli --init" to create project
 * Switch to the debug viewlet and press the gear dropdown.
 * Select the debug environment "ijjs.launch".
 * Press the green 'play' button to start debugging.
-
