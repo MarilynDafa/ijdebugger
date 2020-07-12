@@ -243,9 +243,9 @@ export class IJJSDebugSession extends SourcemapSession {
 		this._commonArgs.localRoot = args.localRoot;
 		this.closeServer();
 
-		var env = {};
+		var env_ = {};
 		try {
-			env = process.env;
+			env_ = process.env;
 			// make sure to 'Stop' the buffered logging if 'trace' is not set
 			logger.setup(this._commonArgs.trace ? Logger.LogLevel.Verbose : Logger.LogLevel.Stop, false);
 
@@ -254,7 +254,7 @@ export class IJJSDebugSession extends SourcemapSession {
 
 				if (!this._commonArgs.port)
 					throw new Error("Must specify a 'port' for 'connect'");
-				env['QUICKJS_DEBUG_LISTEN_ADDRESS'] = `${address}:${this._commonArgs.port}`;
+				env_['QUICKJS_DEBUG_LISTEN_ADDRESS'] = `${address}:${this._commonArgs.port}`;
 			}
 			else {
 				this._server = new Server(this.onSocket.bind(this));
@@ -262,7 +262,7 @@ export class IJJSDebugSession extends SourcemapSession {
 				var port = (<AddressInfo>this._server.address()).port;
 				this.log(`IJJS Debug Port: ${port}`);
 
-				env['QUICKJS_DEBUG_ADDRESS'] = `localhost:${port}`;
+				env_['QUICKJS_DEBUG_ADDRESS'] = `localhost:${port}`;
 			}
 		}
 		catch (e) {
@@ -294,7 +294,7 @@ export class IJJSDebugSession extends SourcemapSession {
 				title: "IJJS Debug Console",
 				cwd,
 				args: ijjsArgs,
-				env,
+
 			};
 
 			this.runInTerminalRequest(termArgs, IJJSDebugSession.RUNINTERMINAL_TIMEOUT, runResponse => {
@@ -309,7 +309,7 @@ export class IJJSDebugSession extends SourcemapSession {
 			let exepath = args.runtimeExecutable;
 			const nodeProcess = CP.spawn(exepath, ijjsArgs, {
 				cwd: this.cwd,
-				env: env
+				env: env_
 			});
 			nodeProcess.on('error', (error) => {
 				// tslint:disable-next-line:no-bitwise
