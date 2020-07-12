@@ -245,7 +245,25 @@ export class IJJSDebugSession extends SourcemapSession {
 
 		var env = {};
 		try {
-			this.beforeConnection(env);
+			env = process.env;
+			// make sure to 'Stop' the buffered logging if 'trace' is not set
+			logger.setup(this._commonArgs.trace ? Logger.LogLevel.Verbose : Logger.LogLevel.Stop, false);
+
+			const address = this._commonArgs.address || 'localhost';
+			if (this._commonArgs.mode == 'connect') {
+
+				if (!this._commonArgs.port)
+					throw new Error("Must specify a 'port' for 'connect'");
+				env['QUICKJS_DEBUG_LISTEN_ADDRESS'] = `${address}:${this._commonArgs.port}`;
+			}
+			else {
+				this._server = new Server(this.onSocket.bind(this));
+				this._server.listen(this._commonArgs.port || 0);
+				var port = (<AddressInfo>this._server.address()).port;
+				this.log(`IJJS Debug Port: ${port}`);
+
+				env['QUICKJS_DEBUG_ADDRESS'] = `localhost:${port}`;
+			}
 		}
 		catch (e) {
 			this.sendErrorResponse(response, 17, e.message);
@@ -321,6 +339,7 @@ export class IJJSDebugSession extends SourcemapSession {
 
 
 	private beforeConnection(env: any) {
+		env = process.env;
 		// make sure to 'Stop' the buffered logging if 'trace' is not set
 		logger.setup(this._commonArgs.trace ? Logger.LogLevel.Verbose : Logger.LogLevel.Stop, false);
 
@@ -339,7 +358,6 @@ export class IJJSDebugSession extends SourcemapSession {
 
 			env['QUICKJS_DEBUG_ADDRESS'] = `localhost:${port}`;
 		}
-		env['Path'] = process.env.PATH;
 	}
 
 	private async afterConnection() {
