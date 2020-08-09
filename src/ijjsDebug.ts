@@ -270,6 +270,7 @@ export class IJJSDebugSession extends SourcemapSession {
 			return;
 		}
 		this.cwd = <string>args.cwd || path.dirname(args.program);
+		this.cwd = this.cwd.replace(/\\/g,"/")
 
 		if (typeof args.console === 'string') {
 			switch (args.console) {
@@ -547,24 +548,27 @@ export class IJJSDebugSession extends SourcemapSession {
 		const body = await this.sendThreadRequest(args.threadId, response, args);
 
 		const stackFrames: StackFrame[] = [];
+		console.log("------------------")
 		for (let { id, name, filename, line, column } of body) {
 			filename=this.cwd+"/"+filename;
+			filename = filename.replace(/\\/g,"/");
 			var mappedId = id + thread;
 			this._stackFrames.set(mappedId, thread);
 
-			try {
-				const mappedLocation = await this.translateRemoteLocationToLocal({
-					source: filename,
-					line: line || 0,
-					column: column || 0,
-				});
-				if (!mappedLocation.source)
-					throw new Error('map failed');
+			const mappedLocation = await this.translateRemoteLocationToLocal({
+				source: filename,
+				line: line || 0,
+				column: column || 0,
+			});
+			if (mappedLocation.name && mappedLocation.name === "@ok@" && mappedLocation.source){
 				const source = new Source(basename(mappedLocation.source), this.convertClientPathToDebugger(mappedLocation.source));
 				stackFrames.push(new StackFrame(mappedId, name, source, mappedLocation.line, mappedLocation.column));
+				console.log(source.path)
 			}
-			catch (e) {
-				stackFrames.push(new StackFrame(mappedId, name, filename, line, column));
+			else{
+				const source = new Source(basename(filename), this.convertClientPathToDebugger(this.getRelativeFile(filename)));
+				stackFrames.push(new StackFrame(mappedId, name, source, line, column));
+				console.log(filename)
 			}
 		}
 
