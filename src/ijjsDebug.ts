@@ -548,7 +548,6 @@ export class IJJSDebugSession extends SourcemapSession {
 		const body = await this.sendThreadRequest(args.threadId, response, args);
 
 		const stackFrames: StackFrame[] = [];
-		console.log("------------------")
 		for (let { id, name, filename, line, column } of body) {
 			filename=this.cwd+"/"+filename;
 			filename = filename.replace(/\\/g,"/");
@@ -563,12 +562,10 @@ export class IJJSDebugSession extends SourcemapSession {
 			if (mappedLocation.name && mappedLocation.name === "@ok@" && mappedLocation.source){
 				const source = new Source(basename(mappedLocation.source), this.convertClientPathToDebugger(mappedLocation.source));
 				stackFrames.push(new StackFrame(mappedId, name, source, mappedLocation.line, mappedLocation.column));
-				console.log(source.path)
 			}
 			else{
 				const source = new Source(basename(filename), this.convertClientPathToDebugger(this.getRelativeFile(filename)));
 				stackFrames.push(new StackFrame(mappedId, name, source, line, column));
-				console.log(filename)
 			}
 		}
 
