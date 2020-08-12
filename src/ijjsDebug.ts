@@ -470,7 +470,7 @@ export class IJJSDebugSession extends SourcemapSession {
 		for (let bpList of this._breakpoints.values()) {
 			for (let bp of bpList.filter(bp => bp.source === file)) {
 				breakpoints.push({
-					line: Math.max(0, bp.line - 1),
+					line: Math.max(0, bp.line),
 					column: bp.column,
 				})
 			}
