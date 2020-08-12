@@ -443,14 +443,24 @@ export class IJJSDebugSession extends SourcemapSession {
 	}
 
 	protected async terminateRequest(response: DebugProtocol.TerminateResponse, args: DebugProtocol.TerminateArguments, request?: DebugProtocol.Request) {
-		this.closeServer();
+		await this.sendExitMessage();
 		this.sendResponse(response);
+		this.closeServer();
 	}
 
 	private getRelativeFile(file:string){
 		let ret = path.relative(this.cwd, file) as string;
 		ret=ret.replace(/\\/g,"/");
 		return ret;
+	}
+
+	private async sendExitMessage(){
+		for (var thread of this._threads.keys()) {
+			this.sendThreadMessage(thread, {
+				type: 'exit',
+				stopOnException: 0,
+			})
+		}
 	}
 
 
