@@ -340,6 +340,7 @@ export class IJJSDebugSession extends SourcemapSession {
 
 
 	private beforeConnection(env: any) {
+		this.loadSourceMaps();
 		env = process.env;
 		// make sure to 'Stop' the buffered logging if 'trace' is not set
 		logger.setup(this._commonArgs.trace ? Logger.LogLevel.Verbose : Logger.LogLevel.Stop, false);
